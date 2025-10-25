@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+    database:
+        image: postgres:17.5
+        container_name: virtex-db
+        environment:
+            POSTGRES_DB: virtex_db
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: 123456
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_virtex_db_volume:/var/lib/postgresql/data
+    backend:
+        image: node:22
+        working_dir: /app/backend
+        command: sh -c "npm install; npm run start:dev"
+        stop_signal: SIGKILL
+        container_name: nestjs-backend
+        ports:
+            - "3000:3000"
+            - "9229:9229"
+        environment:
+            - DATABASE_URL=postgres://root:123456@database:5432/virtex_db
+            - UPLOAD_FILE_DIR=/app/upload/files
+            - NODE_ENV=development
+        depends_on:
+            - database
+        volumes:
+            - "/app/node_modules"
+            - ./backend:/app
+            - upload_volume:/app/upload/files
+
+    frontend:
+        image: node:22
+        working_dir: /app/frontend
+        command: sh -c "npm install; npm run dev -- --host 0.0.0.0"
+        stop_signal: SIGKILL
+        container_name: react-frontend
+        ports:
+            - "5173:5173"
+        depends_on:
+            - backend
+        volumes:
+            - ./frontend:/app
+
+volumes:
+    postgres_virtex_db_volume:
+    upload_volume:
