@@ -7,3 +7,26 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum StateEnum {
+  OFLINE
+  ONLINE
+}
+
+
+enum OltTypeEnum {
+  HUAWE
+  ZTE
+}
+
+model OltsInfo {
+  id           String   @id @default(cuid())
+  slot         String
+  port         String
+  ont_id       String
+  sn           String? @unique
+  state        StateEnum?
+  oltType      OltTypeEnum
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
