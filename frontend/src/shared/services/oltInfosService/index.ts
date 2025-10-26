@@ -8,7 +8,12 @@ import type {
   IListResponse,
   IResponse,
 } from "@/shared/interfaces/response/IResponse";
-import type { ICreateOltInfos, IOltInfos } from "@/shared/interfaces/oltInfos";
+import type {
+  ICreateOltInfos,
+  IOltInfos,
+  IOltInfosSearchFilter,
+} from "@/shared/interfaces/oltInfos";
+import Environment from "@/shared/environments";
 
 const route = "/oltsInfo";
 
@@ -34,9 +39,23 @@ export const OltInfosService = {
     }
   },
 
-  findAll: async (): Promise<IOltInfosListResponse> => {
+  findAll: async ({
+    search,
+    page = "1",
+    perPage = Environment.LIST_ITEMS_LIMIT,
+    oltType,
+    state,
+  }: IOltInfosSearchFilter): Promise<IOltInfosListResponse> => {
     try {
-      const result = await Api.get(`${route}`);
+      const result = await Api.get(route, {
+        params: {
+          search: search ? search : undefined,
+          page: page ? Number(page) : undefined,
+          perPage: perPage ? Number(perPage) : undefined,
+          oltType: oltType ? oltType : undefined,
+          state: state ? state : undefined,
+        },
+      });
       return handleApiResponse(result);
     } catch (error) {
       return handleApiError(error);

@@ -7,10 +7,10 @@ import {
 } from '@nestjs/swagger';
 import { OltsInfo } from '@prisma/generated/client';
 import { PaginatedOutputDto } from 'src/utils/PaginatedOutput.dto';
-import { PaginatedQueryParamsDto } from 'src/utils/PaginatedQueryParams.dto';
 
 import { OltsInfoService } from './olts-info.service';
 import { CreateOltInfosDto } from './dto/createOltInfos.dto';
+import { OltInfosSearchFilters } from './dto/oltInfosSearchFilters.dto';
 
 @ApiTags('oltsInfo')
 @ApiBearerAuth()
@@ -47,7 +47,7 @@ export class OltsInfoController {
   })
   @Get()
   async getAll(
-    @Query() queryParams: PaginatedQueryParamsDto,
+    @Query() queryParams: OltInfosSearchFilters,
   ): Promise<PaginatedOutputDto<OltsInfo>> {
     return this.oltsInfoService.getAll(queryParams);
   }

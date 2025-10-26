@@ -5,7 +5,7 @@ import { createPaginator } from 'prisma-pagination';
 
 import { PaginatedOutputDto } from '../../../utils/PaginatedOutput.dto';
 import { PrismaService } from '../../../database/PrismaService';
-import { PaginatedQueryParamsDto } from '../../../utils/PaginatedQueryParams.dto';
+import { OltInfosSearchFilters } from '../dto/oltInfosSearchFilters.dto';
 
 @Injectable()
 export class GetAllOltsInfosUseCase {
@@ -18,7 +18,9 @@ export class GetAllOltsInfosUseCase {
     search,
     page,
     perPage,
-  }: PaginatedQueryParamsDto): Promise<PaginatedOutputDto<OltsInfo>> {
+    oltType,
+    state,
+  }: OltInfosSearchFilters): Promise<PaginatedOutputDto<OltsInfo>> {
     const envPerPage =
       this.configService.get<number>('NUMBER_ITEMS_PERPAGE') || 10;
     const paginate = createPaginator({ perPage: perPage || envPerPage });
@@ -27,6 +29,8 @@ export class GetAllOltsInfosUseCase {
       OR: search
         ? [{ sn: { contains: search, mode: 'insensitive' } }]
         : undefined,
+      oltType,
+      state,
     };
 
     const { data, meta } = await paginate<

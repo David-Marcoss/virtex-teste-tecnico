@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { OltsInfo } from '@prisma/generated/client';
-import { PaginatedQueryParamsDto } from 'src/utils/PaginatedQueryParams.dto';
 
 import { PaginatedOutputDto } from '../../utils/PaginatedOutput.dto';
 
@@ -8,6 +7,7 @@ import { CreateOltInfosDto } from './dto/createOltInfos.dto';
 import { CreateOltsInfoUseCase } from './use-cases/createOltInfos.usecase';
 import { GetOltInfosByIdUseCase } from './use-cases/getOltInfosById.usecase';
 import { GetAllOltsInfosUseCase } from './use-cases/getAllOltInfos.usecase';
+import { OltInfosSearchFilters } from './dto/oltInfosSearchFilters.dto';
 
 @Injectable()
 export class OltsInfoService {
@@ -22,7 +22,7 @@ export class OltsInfoService {
   }
 
   async getAll(
-    filters: PaginatedQueryParamsDto,
+    filters: OltInfosSearchFilters,
   ): Promise<PaginatedOutputDto<OltsInfo>> {
     return this.getAllOltsInfoUseCase.execute(filters);
   }
