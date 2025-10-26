@@ -1,5 +1,5 @@
+import HomePage from "@/pages/home";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { HomePage } from "../pages/home";
 
 export const RoutesApp = () => {
   return (
