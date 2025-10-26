@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { OltTypeEnum } from '@prisma/generated/enums';
 import { Type } from 'class-transformer';
 import {
   IsEnum,
@@ -7,12 +8,6 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-
-enum OltFileType {
-  'HUAWE',
-  'ZTE_STATE',
-  'ZTE',
-}
 
 export class FileDto {
   @ApiProperty({
@@ -49,9 +44,9 @@ export class CreateOltInfosDto {
 
   @ApiProperty({
     description: 'display file name',
-    example: OltFileType.HUAWE,
-    enum: OltFileType,
+    example: OltTypeEnum.HUAWEI,
+    enum: OltTypeEnum,
   })
-  @IsEnum(OltFileType)
-  oltType: OltFileType;
+  @IsEnum(OltTypeEnum)
+  oltType: OltTypeEnum;
 }

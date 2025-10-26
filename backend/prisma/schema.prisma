@@ -9,14 +9,15 @@ datasource db {
 }
 
 enum StateEnum {
-  OFLINE
+  OFFLINE
   ONLINE
 }
 
 
 enum OltTypeEnum {
-  HUAWE
+  HUAWEI
   ZTE
+  ZTE_STATE
 }
 
 model OltsInfo {
@@ -24,7 +25,7 @@ model OltsInfo {
   slot         String
   port         String
   ont_id       String
-  sn           String? @unique
+  sn           String? 
   state        StateEnum?
   oltType      OltTypeEnum
   createdAt    DateTime @default(now())

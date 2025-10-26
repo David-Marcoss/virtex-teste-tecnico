@@ -11,16 +11,16 @@ export class GetOltInfosByIdUseCase {
     id: string,
     prismaClient: PrismaClient = this.prismaService,
   ): Promise<OltsInfo> {
-    const file = await prismaClient.oltsInfo.findUnique({
+    const data = await prismaClient.oltsInfo.findUnique({
       where: {
         id,
       },
     });
 
-    if (!file) {
+    if (!data) {
       throw new NotFoundException('OltInfo not found');
     }
 
-    return file;
+    return data;
   }
 }
