@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { fileSchema } from "@/shared/schemas/fileSchema";
 import { OltInfosService } from "@/shared/services/oltInfosService";
+import { useToast } from "@/shared/hooks/use-toast";
 
 export type oltType = "HUAWEI" | "ZTE" | "ZTE_STATE";
 
@@ -45,8 +46,14 @@ const createOltInfosSchema = z.object({
 
 type CreateOltInfosFormData = z.infer<typeof createOltInfosSchema>;
 
-export function OltInfosModal() {
+interface IOltInfosModalProps {
+  onCreateData: () => Promise<void>;
+}
+
+export function OltInfosModal({ onCreateData }: IOltInfosModalProps) {
   const [open, setOpen] = useState(false);
+
+  const { toast } = useToast();
 
   const {
     handleSubmit,
@@ -96,11 +103,26 @@ export function OltInfosModal() {
     const result = await OltInfosService.create(createInfos);
 
     if (result.statusCode === 201) {
+      toast({
+        title: "Sucesso",
+        description: "Registro criado com sucesso.",
+        variant: "success",
+      });
+
+      await onCreateData();
+
       setOpen(false);
       reset();
+
+      return;
     }
 
-    console.log("result:", result);
+    toast({
+      title: "Houve um erro ao processar os dados",
+      description:
+        "Verifique se preencheu os dados com o tipo correto e tente novamente.",
+      variant: "destructive",
+    });
   };
 
   return (

@@ -60,7 +60,7 @@ export default function DashboardPage() {
           <div className="flex flex-col gap-1">
             <label className="text-sm text-white">Search</label>
             <Input
-              placeholder="Device name or slot..."
+              placeholder="Device SN ..."
               className="min-w-[200px]"
               onChange={(e) =>
                 setSearchParams({ page: "1", search: e.target.value })
@@ -101,7 +101,11 @@ export default function DashboardPage() {
             </Select>
           </div>
 
-          <OltInfosModal />
+          <OltInfosModal
+            onCreateData={async () => {
+              await handleGetOltsData();
+            }}
+          />
         </CardContent>
       </Card>
 
