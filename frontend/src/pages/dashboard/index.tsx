@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,19 +16,29 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Calendar } from "lucide-react";
 
-export default function HomePage() {
+import { Calendar } from "lucide-react";
+import type { IOltInfos } from "@/shared/interfaces/oltInfos";
+import { OltInfosService } from "@/shared/services/oltInfosService";
+import { OltInfosTable } from "./components/oltInfosTable";
+import { Card, CardContent } from "@/components/ui/card";
+
+export default function DashboardPage() {
   const [file, setFile] = useState<File | null>(null);
+
+  const [oltInfos, setOltInfos] = useState<IOltInfos[]>([]);
+
+  const handleGetOltsData = useCallback(() => {
+    OltInfosService.findAll().then((result) => {
+      if (result.statusCode === 200 && result.data?.data) {
+        setOltInfos(result.data.data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    handleGetOltsData();
+  }, [handleGetOltsData]);
 
   const handleUpload = () => {
     if (!file) return;
@@ -40,23 +50,6 @@ export default function HomePage() {
       body: formData,
     });
   };
-
-  const logs = [
-    {
-      id: 1,
-      device: "OLT-ZTE-001",
-      slot: "1/1/1",
-      event: "ONU offline",
-      date: "2025-10-26 09:43",
-    },
-    {
-      id: 2,
-      device: "OLT-ZTE-002",
-      slot: "1/1/2",
-      event: "Port up",
-      date: "2025-10-26 10:01",
-    },
-  ];
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -127,32 +120,7 @@ export default function HomePage() {
       </Card>
 
       {/* Tabela */}
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Device</TableHead>
-                <TableHead>Slot</TableHead>
-                <TableHead>Event</TableHead>
-                <TableHead>Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {logs.map((log) => (
-                <TableRow key={log.id}>
-                  <TableCell>{log.id}</TableCell>
-                  <TableCell>{log.device}</TableCell>
-                  <TableCell>{log.slot}</TableCell>
-                  <TableCell>{log.event}</TableCell>
-                  <TableCell>{log.date}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <OltInfosTable data={oltInfos} />
     </div>
   );
 }
