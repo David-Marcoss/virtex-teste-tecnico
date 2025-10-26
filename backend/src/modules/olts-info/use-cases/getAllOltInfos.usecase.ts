@@ -25,8 +25,6 @@ export class GetAllOltsInfosUseCase {
       this.configService.get<number>('NUMBER_ITEMS_PERPAGE') || 10;
     const paginate = createPaginator({ perPage: perPage || envPerPage });
 
-    console.log(search);
-
     const where: Prisma.OltsInfoWhereInput = {
       OR: search
         ? [
